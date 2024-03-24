@@ -16,6 +16,6 @@ jobs:
       - name: Setup Environment
         uses: ./.github/actions/setup-environment
 
-      - name: Perform test
-        run: bundle exec fastlane test
+      - name: Run PR Check
+        run: bundle exec fastlane pr_check
 

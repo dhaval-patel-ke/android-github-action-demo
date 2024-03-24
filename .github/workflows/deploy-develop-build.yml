@@ -1,8 +1,6 @@
-name: Deploy Staging Build
+name: Deploy Develop Build
 
-on:
-  push:
-    branches: [ 'release/**' ]
+on: workflow_dispatch
 
 permissions:
   actions: write
@@ -25,32 +23,17 @@ jobs:
       - name: Setup Environment
         run: echo ${{ secrets.SERVICE_ACCOUNT_FILE }} | base64 -d > ${{ env.GOOGLE_SERVICES_FILE_NAME }}
 
-      - name: Build staging APK
+      - name: Build develop APK
         run: bundle exec fastlane staging
         env:
           FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
           SERVICE_ACCOUNT_FILE: ${{ env.GOOGLE_SERVICES_FILE_NAME }}
           FIREBASE_TESTER_GROUPS: "kernelequity"
 
-  create-tag:
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    needs: [firebase-distribution]
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v4
-
-      - name: Set tag version
-        run: echo "VERSION_NAME=${GITHUB_REF##*/}" >> $GITHUB_ENV
-
-      - name: Create tag
-        uses: actions/github-script@v7
-        id: create-tag
+      - name: Upload Android Build
+        uses: actions/upload-artifact@v4
         with:
-          script: |
-            github.rest.git.createRef({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              ref: 'refs/tags/v${{env.VERSION_NAME}}',
-              sha: context.sha
-            })
+          name: ${{ env.APK_NAME }}
+          path: ${{ env.APK_NAME }}
+          if-no-files-found: error
+          compression-level: 0 # no compression

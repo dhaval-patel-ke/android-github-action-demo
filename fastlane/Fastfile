@@ -16,23 +16,29 @@
 default_platform(:android)
 
 platform :android do
-  desc "Runs all the tests"
-  lane :test do
-    gradle(task: "test")
+
+  desc "Perform a PR check"
+  lane :pr_check do
+    gradle(task: "clean build")
   end
 
-  desc "Submit a new Beta Build to Crashlytics Beta"
-  lane :beta do
-    gradle(task: "clean assembleRelease")
-    crashlytics
-  
-    # sh "your_script.sh"
-    # You can also use other beta testing services here
+  desc "Deploy staging build to Firebase Distribution"
+  lane :staging do
+    gradle(task: "clean assembleStagingRelease")
+
+    firebase_app_distribution(
+        app: ENV["FIREBASE_APP_ID"],
+        service_credentials_file: ENV["SERVICE_ACCOUNT_FILE"],
+        groups: ENV["FIREBASE_TESTER_GROUPS"],
+        release_notes: sh("git log -1 --format=%s"),
+        android_artifact_type: "apk",
+        android_artifact_path: ""
+    )
   end
 
-  desc "Deploy a new version to the Google Play"
-  lane :deploy do
-    gradle(task: "clean assembleRelease")
-    upload_to_play_store
+  desc "Deploy production build to Firebase Distribution"
+  lane :production do
+    gradle(task: "clean assembleProductionRelease")
+
   end
 end
