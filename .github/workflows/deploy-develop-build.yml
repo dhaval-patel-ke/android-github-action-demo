@@ -8,6 +8,7 @@ permissions:
 
 env:
   GOOGLE_SERVICES_FILE_NAME: "google-services.json"
+  APK_NAME: "AppName-Staging.apk"
 
 jobs:
   build-android:
@@ -29,12 +30,12 @@ jobs:
           FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
           FIREBASE_TESTER_GROUPS: "kernelequity"
           SERVICE_ACCOUNT_FILE: ${{ env.GOOGLE_SERVICES_FILE_NAME }}
-          ANDROID_ARTIFACT_PATH: "build/outputs/apk/staging/release/.apk"
+          ANDROID_ARTIFACT_PATH: "app/build/outputs/apk/staging/release/.apk"
 
       - name: Upload Android Build
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.APK_NAME }}
-          path: ${{ env.APK_NAME }}
+          path: "app/build/outputs/apk/staging/release/.apk"
           if-no-files-found: error
           compression-level: 0 # no compression
