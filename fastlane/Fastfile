@@ -22,6 +22,21 @@ platform :android do
     gradle(task: "clean build")
   end
 
+  desc "Perform a detekt check"
+  lane :detekt_check do
+    gradle(task: "detekt")
+  end
+
+  desc "Perform a ktlint check"
+  lane :ktlint_check do
+    gradle(task: "ktlint")
+  end
+
+  desc "Perform a lint check"
+  lane :lint_check do
+    gradle(task: "lint")
+  end
+
   desc "Deploy staging build to Firebase Distribution"
   lane :staging do
     gradle(task: "clean assembleStagingRelease")

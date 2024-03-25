@@ -1,0 +1,49 @@
+name: Perform lint Check
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  lint-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Setup Environment
+        uses: ./.github/actions/setup-environment
+
+      - name: Run lint Check
+        run: bundle exec fastlane lint_check
+
+      - name: Upload lint Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-lint-report
+          path: ~/app/build/reports/lint-results-*.html
+          if-no-files-found: error
+          compression-level: 0 # no compression
+
+      - name: Run detekt Check
+        run: bundle exec fastlane detekt_check
+
+      - name: Upload detekt Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-detekt-report
+          path: ~/app/build/reports/detekt/
+          if-no-files-found: error
+          compression-level: 0 # no compression
+
+      - name: Run ktlint Check
+        run: bundle exec fastlane ktlint_check
+
+      - name: Upload ktlint Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-ktlint-report
+          path: ~/app/build/reports/ktlint/
+          if-no-files-found: error
+          compression-level: 0 # no compression
