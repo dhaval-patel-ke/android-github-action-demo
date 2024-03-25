@@ -23,7 +23,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: android-lint-report
-          path: ~/app/build/reports/
+          path: app/build/reports/
           if-no-files-found: error
           compression-level: 0 # no compression
 
@@ -34,7 +34,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: android-detekt-report
-          path: ~/app/build/reports/detekt/
+          path: app/build/reports/detekt/
           if-no-files-found: error
           compression-level: 0 # no compression
 
@@ -45,6 +45,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: android-ktlint-report
-          path: ~/app/build/reports/ktlint/
+          path: app/build/reports/ktlint/
           if-no-files-found: error
           compression-level: 0 # no compression
