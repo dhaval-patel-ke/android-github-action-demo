@@ -36,6 +36,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.APK_NAME }}
-          path: "app/build/outputs/apk/staging/release/.apk"
+          path: "app/build/outputs/apk/staging/release/*.apk"
           if-no-files-found: error
           compression-level: 0 # no compression
