@@ -27,8 +27,9 @@ jobs:
         run: bundle exec fastlane staging
         env:
           FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
-          SERVICE_ACCOUNT_FILE: ${{ env.GOOGLE_SERVICES_FILE_NAME }}
           FIREBASE_TESTER_GROUPS: "kernelequity"
+          SERVICE_ACCOUNT_FILE: ${{ env.GOOGLE_SERVICES_FILE_NAME }}
+          ANDROID_ARTIFACT_PATH: "app/build/outputs/apk/staging/release/.apk"
 
       - name: Upload Android Build
         uses: actions/upload-artifact@v4
