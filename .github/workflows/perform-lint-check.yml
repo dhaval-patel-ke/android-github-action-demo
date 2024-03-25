@@ -3,6 +3,7 @@ name: Perform lint Check
 on:
   pull_request:
     types: [opened, synchronize]
+  workflow_dispatch:
 
 jobs:
   lint-check:
