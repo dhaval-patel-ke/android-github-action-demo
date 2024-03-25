@@ -29,7 +29,7 @@ platform :android do
 
   desc "Perform a ktlint check"
   lane :ktlint_check do
-    gradle(task: "ktlint")
+    gradle(task: "ktlintCheck")
   end
 
   desc "Perform a lint check"
