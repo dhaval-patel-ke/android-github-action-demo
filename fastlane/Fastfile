@@ -32,7 +32,7 @@ platform :android do
         groups: ENV["FIREBASE_TESTER_GROUPS"],
         release_notes: sh("git log -1 --format=%s"),
         android_artifact_type: "APK",
-        android_artifact_path: ENV["ANDROID_ARTIFACT_PATH"]
+        android_artifact_path: lane_context[SharedValues::GRADLE_APK_OUTPUT_PATH]
     )
   end
 
