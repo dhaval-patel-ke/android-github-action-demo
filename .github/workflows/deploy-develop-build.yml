@@ -29,8 +29,12 @@ jobs:
         shell: bash
         run: |
           echo "RELEASE_NAME=$(git log -1 --format=%s)" >> $GITHUB_ENV
-          echo "RELEASE_BODY=\"$(git log -1 --format=%b)\"" >> $GITHUB_ENV
           echo "VERSION_NAME=$(./gradlew -q printVersion -PflavorName=staging)" >> $GITHUB_ENV
+
+      - name: Retrieve version name
+        shell: bash
+        run: |
+          echo "RELEASE_BODY=\"$(git log -1 --format=%b)\"" >> $GITHUB_ENV
 
   #      - name: Setup Environment
 #        run: echo ${{ secrets.SERVICE_ACCOUNT_FILE }} | base64 -d > ${{ env.GOOGLE_SERVICES_FILE_NAME }}
