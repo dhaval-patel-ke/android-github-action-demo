@@ -71,6 +71,17 @@ android {
 
 }
 
+// ./gradlew -q printVersion -PflavorName=production
+task printVersion {
+    doLast {
+        android.productFlavors.all { flavor ->
+            if (flavorName.matches(flavor.name)) {
+                println flavor.versionName
+            }
+        }
+    }
+}
+
 dependencies {
 
     implementation libs.androidx.core.ktx
