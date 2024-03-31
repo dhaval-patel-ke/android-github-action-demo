@@ -18,23 +18,42 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
-      - name: Setup Environment
-        uses: ./.github/actions/setup-environment
+      - name: Set env
+        run: echo "VERSION_NAME=$(./gradlew -q printVersion -PflavorName=staging)" >> $VERSION_NAME
 
-      - name: Setup Environment
-        run: echo ${{ secrets.SERVICE_ACCOUNT_FILE }} | base64 -d > ${{ env.GOOGLE_SERVICES_FILE_NAME }}
+        #      - name: Setup Environment
+#        uses: ./.github/actions/setup-environment
+#
+#      - name: Setup Environment
+#        run: echo ${{ secrets.SERVICE_ACCOUNT_FILE }} | base64 -d > ${{ env.GOOGLE_SERVICES_FILE_NAME }}
+#
+#      - name: Build develop APK
+#        run: bundle exec fastlane staging
+#        env:
+#          FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+#          FIREBASE_TESTER_GROUPS: "kernelequity"
+#          SERVICE_ACCOUNT_FILE: ${{ env.GOOGLE_SERVICES_FILE_NAME }}
+#
+#      - name: Upload Android Build
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: ${{ env.APK_NAME }}
+#          path: "app/build/outputs/apk/staging/release/*.apk"
+#          if-no-files-found: error
+#          compression-level: 0 # no compression
 
-      - name: Build develop APK
-        run: bundle exec fastlane staging
-        env:
-          FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
-          FIREBASE_TESTER_GROUPS: "kernelequity"
-          SERVICE_ACCOUNT_FILE: ${{ env.GOOGLE_SERVICES_FILE_NAME }}
-
-      - name: Upload Android Build
-        uses: actions/upload-artifact@v4
+      # https://docs.github.com/en/rest/releases/releases?apiVersion=2022-11-28#create-a-release
+      # target_commitish: "master"
+      - name: Create Release
+        uses: actions/github-script@v7
+        id: create-release
         with:
-          name: ${{ env.APK_NAME }}
-          path: "app/build/outputs/apk/staging/release/*.apk"
-          if-no-files-found: error
-          compression-level: 0 # no compression
+          script: |
+            github.rest.repos.createRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              name: 'v${{env.VERSION_NAME}}',
+              tag_name: 'v${{env.VERSION_NAME}}',
+              target_commitish: '${{ github.ref_name }}',
+              draft: true,
+            })
