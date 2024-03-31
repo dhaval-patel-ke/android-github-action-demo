@@ -71,7 +71,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               name: '${{env.RELEASE_NAME}}',
-              body: "${{env.RELEASE_BODY}}",
+              body: '${{env.RELEASE_BODY}}',
               tag_name: 'v${{env.VERSION_NAME}}',
               target_commitish: '${{ github.ref_name }}',
               draft: false,
