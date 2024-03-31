@@ -74,5 +74,6 @@ jobs:
               body: '${{env.RELEASE_BODY}}',
               tag_name: 'v${{env.VERSION_NAME}}',
               target_commitish: '${{ github.ref_name }}',
-              draft: true,
+              draft: false,
+              prerelease: false,
             })
