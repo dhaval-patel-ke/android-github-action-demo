@@ -1,6 +1,10 @@
 name: Deploy Develop Build
 
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+  push:
+    branches: [ 'develop' ]
+
 
 permissions:
   actions: write
