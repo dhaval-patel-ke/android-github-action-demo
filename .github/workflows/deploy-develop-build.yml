@@ -34,7 +34,11 @@ jobs:
       - name: Retrieve version name
         shell: bash
         run: |
-          echo "RELEASE_BODY=\"$(git log -1 --format=%b)\"" >> $GITHUB_ENV
+          {
+              echo 'RELEASE_BODY<<EOF'
+              git log -1 --format=%b
+              echo EOF
+          } >> "$GITHUB_ENV"
 
   #      - name: Setup Environment
 #        run: echo ${{ secrets.SERVICE_ACCOUNT_FILE }} | base64 -d > ${{ env.GOOGLE_SERVICES_FILE_NAME }}
