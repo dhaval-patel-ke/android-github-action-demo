@@ -26,7 +26,10 @@ jobs:
         uses: ./.github/actions/setup-environment
 
       - name: Retrieve version name
-        run: echo "VERSION_NAME=$(./gradlew -q printVersion -PflavorName=staging)" >> $GITHUB_ENV
+        run: |
+          echo "VERSION_NAME=$(./gradlew -q printVersion -PflavorName=staging)" >> $GITHUB_ENV
+          echo "RELEASE_NAME=$(git log -1 --format=%s)" >> $GITHUB_ENV
+          echo "RELEASE_BODY=$(git log -1 --format=%b)" >> $GITHUB_ENV
 
       #      - name: Setup Environment
 #        run: echo ${{ secrets.SERVICE_ACCOUNT_FILE }} | base64 -d > ${{ env.GOOGLE_SERVICES_FILE_NAME }}
@@ -56,8 +59,9 @@ jobs:
             github.rest.repos.createRelease({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              name: 'v${{env.VERSION_NAME}}',
+              name: '${{env.RELEASE_NAME}}',
+              body: '${{env.RELEASE_BODY}}',
               tag_name: 'v${{env.VERSION_NAME}}',
               target_commitish: '${{ github.ref_name }}',
-              draft: true,
+              draft: false,
             })

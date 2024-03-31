@@ -56,7 +56,7 @@ android {
 
         production {
             versionCode 1
-            versionName "1.0.0-rc1"
+            versionName "1.1.2"
             applicationId "com.dhaval2404.android"
             manifestPlaceholders = [appName: "Github Action Demo"]
         }
