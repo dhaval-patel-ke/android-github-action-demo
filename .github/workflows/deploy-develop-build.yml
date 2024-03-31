@@ -35,12 +35,14 @@ jobs:
         shell: bash
         run: |
           {
-              echo 'RELEASE_BODY<<EOF'
+              echo 'RELEASE_BODY_TEMP<<EOF'
               git log -1 --format=%b
               echo EOF
-          } >> "$GITHUB_ENV"
+          }
+          RELEASE_BODY=$(echo "$RELEASE_BODY_TEMP" | sed 's/\\n/<br>/g') >> "$GITHUB_ENV"
+      
 
-  #      - name: Setup Environment
+      #      - name: Setup Environment
 #        run: echo ${{ secrets.SERVICE_ACCOUNT_FILE }} | base64 -d > ${{ env.GOOGLE_SERVICES_FILE_NAME }}
 #
 #      - name: Build develop APK
