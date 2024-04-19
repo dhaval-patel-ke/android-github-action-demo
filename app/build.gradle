@@ -49,7 +49,7 @@ android {
     productFlavors {
         staging {
             versionCode 1
-            versionName "1.1.3-rc1"
+            versionName "1.1.3-rc2"
             applicationId "com.dhaval2404.android"
             manifestPlaceholders = [appName: "[STG] Github Action Demo"]
         }
@@ -78,6 +78,15 @@ task printVersion {
             if (flavorName.matches(flavor.name)) {
                 println flavor.versionName
             }
+        }
+    }
+}
+
+// ./gradlew -q androidVersionName -PflavorName=production
+tasks.register("androidVersionName") {
+    android.productFlavors.configureEach { flavor ->
+        if (flavorName.matches(flavor.name)) {
+            println flavor.versionName
         }
     }
 }

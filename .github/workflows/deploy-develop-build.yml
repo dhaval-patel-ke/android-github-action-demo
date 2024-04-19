@@ -29,7 +29,7 @@ jobs:
         shell: bash
         run: |
           echo "RELEASE_NAME=$(git log -1 --format=%s)" >> $GITHUB_ENV
-          echo "VERSION_NAME=$(./gradlew -q printVersion -PflavorName=staging)" >> $GITHUB_ENV
+          echo "VERSION_NAME=$(./gradlew -q androidVersionName -PflavorName=staging)" >> $GITHUB_ENV
 
       - name: Retrieve version name
         shell: bash
@@ -62,12 +62,13 @@ jobs:
 
       # https://docs.github.com/en/rest/releases/releases?apiVersion=2022-11-28#create-a-release
       # target_commitish: "master"
+
       - name: Create Release
         uses: actions/github-script@v7
         id: create-release
         with:
           script: |
-            github.rest.repos.createRelease({
+            const result = await github.rest.repos.createRelease({
               owner: context.repo.owner,
               repo: context.repo.repo,
               name: 'DemoApp v${{env.VERSION_NAME}}',
@@ -77,3 +78,8 @@ jobs:
               draft: false,
               prerelease: false,
             })
+            console.log(result)
+
+      - name: Notify on Google Chat
+        run: |
+          curl --location '${{ secrets.GOOGLE_CHAT_WEBHOOK }}' --header 'Content-Type: application/json' --data '{ "text": "*DazzleMe App 🚀🚀🚀*\nProduction API is working fine. Nothing to worry about. 🧘\nYou can find Report here: ${{ steps.artifact-upload-step.outputs.artifact-url }}" }'
