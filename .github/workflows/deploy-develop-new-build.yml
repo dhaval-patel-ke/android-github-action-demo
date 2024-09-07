@@ -16,7 +16,7 @@ concurrency:
 env:
   GOOGLE_SERVICES_FILE_NAME: "google-services.json"
   APK_NAME: "Test App"
-  FIREBASE_DISTRIBUTION_LINK: "https://appdistribution.firebase.google.com/testerapps/"
+  FIREBASE_DISTRIBUTION_LINK: "https://appdistribution.firebase.google.com/testerapps"
 
 jobs:
   build-android:
