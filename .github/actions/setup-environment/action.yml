@@ -1,6 +1,11 @@
 name: Setup Environment
 description: 'Setup environment'
 
+inputs:
+  GH_ACCESS_TOKEN:
+    description: 'GitHub personal access token'
+    required: false
+
 runs:
   using: "composite"
   steps:
