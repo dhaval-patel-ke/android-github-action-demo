@@ -43,6 +43,6 @@ jobs:
           google-chat-webhook: ${{ secrets.GOOGLE_CHAT_WEBHOOK }}
           image: ${{ vars.HOPDOC_APP_LOGO }}
           title: ${{ env.APP_NAME }}
-          subtitle: "*v${{ env.VERSION_NAME }}* for android is deployed."
+          subtitle: "v${{ env.VERSION_NAME }} for android is deployed."
           app-link: '${{ env.FIREBASE_DISTRIBUTION_LINK }}/${{ secrets.FIREBASE_APP_ID }}'
-          app-version: ${{ env.VERSION_NAME }}
+          app-version: "v${{ env.VERSION_NAME }}"

@@ -48,6 +48,16 @@ runs:
             echo EOF
         } >> "$GITHUB_ENV"
 
+    - name: Sanitise release note
+      id: read-content
+      uses: actions/github-script@v7
+      with:
+        result-encoding: string
+        script: |
+          const fileContent = ${{ env.RELEASE_NOTE }};
+          const content = fileContent.replace("'", "");
+          return content;
+
     - name: Notify on google chat
       shell: bash
       run: |
@@ -61,7 +71,7 @@ runs:
         ACTION_LOGO: ${{ inputs.image }}
         ACTION_TITLE: ${{ inputs.title }}
         ACTION_SUBTITLE: ${{ inputs.subtitle }}
-        ACTION_DESCRIPTION: "<b>Release Note:</b><br>${{ env.RELEASE_NOTE }}"
+        ACTION_DESCRIPTION: "<b>Release Note:</b><br>${{ steps.read-content.outputs.result }}"
         DOWNLOAD_ACTION: "Download"
         DOWNLOAD_URL: ${{ inputs.app-link }}
         TAG_ACTION: ${{ inputs.app-version }}
