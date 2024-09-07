@@ -54,8 +54,8 @@ runs:
       with:
         result-encoding: string
         script: |
-          const fileContent = "${{ env.RELEASE_NOTE }}";
-          const content = fileContent.replace("'", "");
+          const fileContent = ${{ env.RELEASE_NOTE }};
+          const content = fileContent.replace(/'/g, "");
           return content;
 
     - name: Notify on google chat
