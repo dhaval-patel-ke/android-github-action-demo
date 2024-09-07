@@ -48,8 +48,7 @@ runs:
             echo EOF
         } >> "$GITHUB_ENV"
         cleaned_text=$(echo "${{ env.RELEASE_NOTE }}" | tr -d "'\"")
-        echo cleaned_text
-
+        echo $cleaned_text
 
     - name: Sanitize release note
       id: set-content
