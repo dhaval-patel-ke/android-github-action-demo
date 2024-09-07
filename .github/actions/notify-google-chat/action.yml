@@ -35,6 +35,11 @@ inputs:
     required: false
     default: 'false'
 
+  release-note-file:
+    description: 'Release note file'
+    required: false
+    default: 'release_note.txt'
+
 runs:
   using: "composite"
   steps:
@@ -50,19 +55,33 @@ runs:
         cleaned_text=$(echo "${{ env.RELEASE_NOTE }}" | tr -d "'\"")
         echo "$cleaned_text"
 
-    - name: Sanitize release note
+    - name: Generate message
+      shell: bash
+      run: |
+        echo "<b>Release Note:</b><br>${{ env.RELEASE_NOTE }}" >> ${{ inputs.release-note-file }}
+
+    - name: Upload release note
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ inputs.release-note-file }}
+        path: ${{ inputs.release-note-file }}
+
+    - name: Read file content
       id: set-content
       uses: actions/github-script@v7
       with:
         result-encoding: string
         script: |
-          const fileContent = '${{ env.RELEASE_NOTE }}';
-          const content = fileContent.replace(/'/g, "");
+          const fs = require('fs');
+          const filePath = '${{ inputs.release-note-file }}';
+          const fileContent = fs.readFileSync(filePath, 'utf8');
+          const content = fileContent.replace("'", "");
           return content;
 
     - name: Notify on google chat
       shell: bash
       run: |
+        cleaned_text=$(echo "<b>Release Note:</b><br>$multiline_text" | tr -d "'\"")
         if ${{ env.SKIP_TAG == false || env.SKIP_TAG == 'false' }}; then
           java -jar .github/google-chat-client.jar --url '${{ env.GOOGLE_CHAT_WEBHOOK }}' --title '${{ env.ACTION_TITLE }}' --subtitle '${{ env.ACTION_SUBTITLE }}' --imageUrl '${{ env.ACTION_LOGO }}' --desc '${{ env.ACTION_DESCRIPTION }}' --action '${{ env.DOWNLOAD_ACTION }}' --actionUrl '${{ env.DOWNLOAD_URL }}' --action '${{ env.TAG_ACTION }}' --actionUrl '${{ env.TAG_URL }}'
         else 
@@ -73,7 +92,7 @@ runs:
         ACTION_LOGO: ${{ inputs.image }}
         ACTION_TITLE: ${{ inputs.title }}
         ACTION_SUBTITLE: ${{ inputs.subtitle }}
-        ACTION_DESCRIPTION: "<b>Release Note:</b><br>${{ steps.set-content.outputs.result }}"
+        ACTION_DESCRIPTION: ${{ steps.set-content.outputs.result }}
         DOWNLOAD_ACTION: "Download"
         DOWNLOAD_URL: ${{ inputs.app-link }}
         TAG_ACTION: ${{ inputs.app-version }}
