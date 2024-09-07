@@ -17,3 +17,10 @@ runs:
         ruby-version: '3.3' # Not needed with a .ruby-version file
         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
 
+    - name: Download Google Chat Client
+      shell: bash
+      run: |
+        cd .github
+        curl -H "Authorization: token ${{ env.GH_ACCESS_TOKEN }}" -L -o google-chat-client.jar https://maven.pkg.github.com/dhaval-patel-ke/google-chat-client/com/kernelequity/google-chat-client/1.0.2/google-chat-client-1.0.2.jar
+      env:
+        GH_ACCESS_TOKEN: ${{ inputs.GH_ACCESS_TOKEN }}

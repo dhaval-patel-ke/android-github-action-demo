@@ -1,0 +1,76 @@
+name: Notify Release
+description: 'Notify on google chat'
+
+inputs:
+  app-logo:
+    description: 'App logo url'
+    required: true
+
+  title:
+    description: 'Message title'
+    required: true
+    default: 'KernelApp'
+
+  app-download-link:
+    description: 'AppBuild download link'
+    required: true
+    default: ''
+
+  app-platform:
+    description: 'App platform. i.e. android, ios'
+    required: true
+
+  google-chat-webhook:
+    description: 'Google chat webhook'
+    required: true
+
+  version-name:
+    description: 'Application version name'
+    required: true
+    default: '1.0'
+
+  skip-tag:
+    description: 'Skip GitHub tag from release note'
+    required: false
+    default: 'false'
+
+
+runs:
+  using: "composite"
+  steps:
+    - name: Retrieve release note
+      id: release-note
+      shell: bash
+      run: |
+        {
+            echo 'RELEASE_NOTE<<EOF'
+            <b>Release Note:</b><br>
+            git log -1 --format=%B
+            echo EOF
+        } >> "$GITHUB_ENV"
+
+    - name: Notify on google chat
+      shell: bash
+      run: |
+        if ${{ env.SKIP_TAG == false || env.SKIP_TAG == 'false' }}; then
+          java -jar .github/google-chat-client.jar --url '${{ env.GOOGLE_CHAT_WEBHOOK }}' --title '${{ env.ACTION_TITLE }}' --subtitle '${{ env.ACTION_SUBTITLE }}' --imageUrl '${{ env.ACTION_LOGO }}' --desc '${{ env.ACTION_DESCRIPTION }}' --action '${{ env.DOWNLOAD_ACTION }}' --actionUrl '${{ env.DOWNLOAD_URL }}' --action '${{ env.TAG_ACTION }}' --actionUrl '${{ env.TAG_URL }}'
+        else 
+          java -jar .github/google-chat-client.jar --url '${{ env.GOOGLE_CHAT_WEBHOOK }}' --title '${{ env.ACTION_TITLE }}' --subtitle '${{ env.ACTION_SUBTITLE }}' --imageUrl '${{ env.ACTION_LOGO }}' --desc '${{ env.ACTION_DESCRIPTION }}' --action '${{ env.DOWNLOAD_ACTION }}' --actionUrl '${{ env.DOWNLOAD_URL }}'
+        fi
+      env:
+        GOOGLE_CHAT_WEBHOOK: ${{ inputs.google-chat-webhook }}
+        ACTION_LOGO: ${{ inputs.app-logo }}
+        ACTION_TITLE: ${{ inputs.app-name }}
+        ACTION_SUBTITLE: "*v${{ inputs.version-name }}* for ${{ inputs.app-platform }} is deployed."
+        ACTION_DESCRIPTION: ${{ env.RELEASE_NOTE }}
+        DOWNLOAD_ACTION: "Download"
+        DOWNLOAD_URL: ${{ inputs.app-download-link }}
+        TAG_ACTION: ${{ inputs.version-name }}
+        TAG_URL: "${{ github.server_url }}/${{ github.repository }}/releases/tag/v${{ env.VERSION_NAME }}"
+
+    - name: Notify release on google chat
+      shell: bash
+      env:
+        GOOGLE_CHAT_WEBHOOK: ${{ inputs.google-chat-webhook }}
+      run: |
+        curl --location '${{ env.GOOGLE_CHAT_WEBHOOK }}' --header 'Content-Type: application/json' --data '{ "text": "${{ steps.read-content.outputs.result }}" }'

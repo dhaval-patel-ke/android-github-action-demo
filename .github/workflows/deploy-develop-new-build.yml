@@ -1,0 +1,48 @@
+name: Deploy Develop Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ 'develop' ]
+
+
+permissions:
+  actions: write
+  contents: write
+
+env:
+  GOOGLE_SERVICES_FILE_NAME: "google-services.json"
+  APK_NAME: "Test App"
+  FIREBASE_DISTRIBUTION_LINK: "https://appdistribution.firebase.google.com/testerapps/"
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Setup Environment
+        uses: ./.github/actions/setup-environment
+        with:
+          GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+
+      - name: Retrieve version name
+        shell: bash
+        run: |
+          echo "RELEASE_NAME=$(git log -1 --format=%s)" >> $GITHUB_ENV
+          echo "VERSION_NAME=2.0.2" >> $GITHUB_ENV
+
+      - name: Notify release on google chat
+        uses: ./.github/actions/notify-google-chat
+        with:
+          app-platform: 'Android'
+          image: ${{ vars.HOPDOC_APP_LOGO }}
+          title: ${{ env.APP_NAME }}
+          subtitle: "*v${{ inputs.version-name }}* for ${{ inputs.app-platform }} is deployed."
+          app-download-link: '${{ env.FIREBASE_DISTRIBUTION_LINK }}/${{ secrets.FIREBASE_APP_ID }}'
+          google-chat-webhook: ${{ secrets.GOOGLE_CHAT_WEBHOOK }}
+          version-name: ${{ env.VERSION_NAME }}
+
+      
