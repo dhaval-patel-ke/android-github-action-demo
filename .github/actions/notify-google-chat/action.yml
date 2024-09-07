@@ -25,10 +25,10 @@ inputs:
     required: true
     default: ''
 
-  app-version:
-    description: 'App version name'
-    required: true
-    default: '1.0'
+  tag-name:
+    description: 'Release/Tag name'
+    required: false
+    default: 'v1.0'
 
   skip-tag:
     description: 'Skip GitHub tag from release note'
@@ -83,9 +83,9 @@ runs:
       run: |
         cleaned_text=$(echo "<b>Release Note:</b><br>$multiline_text" | tr -d "'\"")
         if ${{ env.SKIP_TAG == false || env.SKIP_TAG == 'false' }}; then
-          java -jar .github/google-chat-client.jar --url '${{ env.GOOGLE_CHAT_WEBHOOK }}' --title '${{ env.ACTION_TITLE }}' --subtitle '${{ env.ACTION_SUBTITLE }}' --imageUrl '${{ env.ACTION_LOGO }}' --desc '${{ env.ACTION_DESCRIPTION }}' --action '${{ env.DOWNLOAD_ACTION }}' --actionUrl '${{ env.DOWNLOAD_URL }}' --action '${{ env.TAG_ACTION }}' --actionUrl '${{ env.TAG_URL }}'
-        else 
           java -jar .github/google-chat-client.jar --url '${{ env.GOOGLE_CHAT_WEBHOOK }}' --title '${{ env.ACTION_TITLE }}' --subtitle '${{ env.ACTION_SUBTITLE }}' --imageUrl '${{ env.ACTION_LOGO }}' --desc '${{ env.ACTION_DESCRIPTION }}' --action '${{ env.DOWNLOAD_ACTION }}' --actionUrl '${{ env.DOWNLOAD_URL }}'
+        else 
+          java -jar .github/google-chat-client.jar --url '${{ env.GOOGLE_CHAT_WEBHOOK }}' --title '${{ env.ACTION_TITLE }}' --subtitle '${{ env.ACTION_SUBTITLE }}' --imageUrl '${{ env.ACTION_LOGO }}' --desc '${{ env.ACTION_DESCRIPTION }}' --action '${{ env.DOWNLOAD_ACTION }}' --actionUrl '${{ env.DOWNLOAD_URL }}' --action '${{ env.TAG_ACTION }}' --actionUrl '${{ env.TAG_URL }}'
         fi
       env:
         GOOGLE_CHAT_WEBHOOK: ${{ inputs.google-chat-webhook }}
@@ -95,5 +95,5 @@ runs:
         ACTION_DESCRIPTION: ${{ steps.set-content.outputs.result }}
         DOWNLOAD_ACTION: "Download"
         DOWNLOAD_URL: ${{ inputs.app-link }}
-        TAG_ACTION: ${{ inputs.app-version }}
+        TAG_ACTION: ${{ inputs.tag-name }}
         TAG_URL: "${{ github.server_url }}/${{ github.repository }}/releases/tag/v${{ inputs.app-version }}"
