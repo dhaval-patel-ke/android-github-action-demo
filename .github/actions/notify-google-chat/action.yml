@@ -54,7 +54,7 @@ runs:
         if ${{ env.SKIP_TAG == false || env.SKIP_TAG == 'false' }}; then
           java -jar .github/google-chat-client.jar --url '${{ env.GOOGLE_CHAT_WEBHOOK }}' --title '${{ env.ACTION_TITLE }}' --subtitle '${{ env.ACTION_SUBTITLE }}' --imageUrl '${{ env.ACTION_LOGO }}' --desc '${{ env.ACTION_DESCRIPTION }}' --action '${{ env.DOWNLOAD_ACTION }}' --actionUrl '${{ env.DOWNLOAD_URL }}' --action '${{ env.TAG_ACTION }}' --actionUrl '${{ env.TAG_URL }}'
         else 
-          java -jar .github/google-chat-client.jar --url '${{ env.GOOGLE_CHAT_WEBHOOK }}' --title '${{ env.ACTION_TITLE }}' --subtitle '${{ env.ACTION_SUBTITLE }}' --imageUrl '${{ env.ACTION_LOGO }}' --desc "${{ env.ACTION_DESCRIPTION }}" --action '${{ env.DOWNLOAD_ACTION }}' --actionUrl '${{ env.DOWNLOAD_URL }}'
+          java -jar .github/google-chat-client.jar --url '${{ env.GOOGLE_CHAT_WEBHOOK }}' --title '${{ env.ACTION_TITLE }}' --subtitle '${{ env.ACTION_SUBTITLE }}' --imageUrl '${{ env.ACTION_LOGO }}' --desc '${{ env.ACTION_DESCRIPTION }}' --action '${{ env.DOWNLOAD_ACTION }}' --actionUrl '${{ env.DOWNLOAD_URL }}'
         fi
       env:
         GOOGLE_CHAT_WEBHOOK: ${{ inputs.google-chat-webhook }}
