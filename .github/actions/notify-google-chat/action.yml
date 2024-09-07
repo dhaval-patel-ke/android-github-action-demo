@@ -61,7 +61,7 @@ runs:
         ACTION_LOGO: ${{ inputs.image }}
         ACTION_TITLE: ${{ inputs.title }}
         ACTION_SUBTITLE: ${{ inputs.subtitle }}
-        ACTION_DESCRIPTION: "<b>Release Note:</b><br>${{ env.RELEASE_NOTE }}"
+        ACTION_DESCRIPTION: "\<b>Release Note:\</b>\<br>${{ env.RELEASE_NOTE }}"
         DOWNLOAD_ACTION: "Download"
         DOWNLOAD_URL: ${{ inputs.app-link }}
         TAG_ACTION: ${{ inputs.app-version }}
