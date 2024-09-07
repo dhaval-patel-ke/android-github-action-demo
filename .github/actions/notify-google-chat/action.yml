@@ -2,30 +2,31 @@ name: Notify Release
 description: 'Notify on google chat'
 
 inputs:
-  app-logo:
-    description: 'App logo url'
+  google-chat-webhook:
+    description: 'Google chat webhook'
+    required: true
+
+  image:
+    description: 'Logo url '
     required: true
 
   title:
     description: 'Message title'
     required: true
-    default: 'KernelApp'
+    default: '{App Name}'
 
-  app-download-link:
-    description: 'AppBuild download link'
+  subtitle:
+    description: 'Message subtitle'
+    required: true
+    default: '{Message Info}'
+
+  app-link:
+    description: 'App download link'
     required: true
     default: ''
 
-  app-platform:
-    description: 'App platform. i.e. android, ios'
-    required: true
-
-  google-chat-webhook:
-    description: 'Google chat webhook'
-    required: true
-
-  version-name:
-    description: 'Application version name'
+  app-version:
+    description: 'App version name'
     required: true
     default: '1.0'
 
@@ -33,7 +34,6 @@ inputs:
     description: 'Skip GitHub tag from release note'
     required: false
     default: 'false'
-
 
 runs:
   using: "composite"
@@ -59,18 +59,11 @@ runs:
         fi
       env:
         GOOGLE_CHAT_WEBHOOK: ${{ inputs.google-chat-webhook }}
-        ACTION_LOGO: ${{ inputs.app-logo }}
-        ACTION_TITLE: ${{ inputs.app-name }}
-        ACTION_SUBTITLE: "*v${{ inputs.version-name }}* for ${{ inputs.app-platform }} is deployed."
+        ACTION_LOGO: ${{ inputs.image }}
+        ACTION_TITLE: ${{ inputs.title }}
+        ACTION_SUBTITLE: ${{ inputs.subtitle }}
         ACTION_DESCRIPTION: ${{ env.RELEASE_NOTE }}
         DOWNLOAD_ACTION: "Download"
-        DOWNLOAD_URL: ${{ inputs.app-download-link }}
-        TAG_ACTION: ${{ inputs.version-name }}
-        TAG_URL: "${{ github.server_url }}/${{ github.repository }}/releases/tag/v${{ env.VERSION_NAME }}"
-
-    - name: Notify release on google chat
-      shell: bash
-      env:
-        GOOGLE_CHAT_WEBHOOK: ${{ inputs.google-chat-webhook }}
-      run: |
-        curl --location '${{ env.GOOGLE_CHAT_WEBHOOK }}' --header 'Content-Type: application/json' --data '{ "text": "${{ steps.read-content.outputs.result }}" }'
+        DOWNLOAD_URL: ${{ inputs.app-link }}
+        TAG_ACTION: ${{ inputs.app-version }}
+        TAG_URL: "${{ github.server_url }}/${{ github.repository }}/releases/tag/v${{ inputs.app-version }}"
