@@ -34,9 +34,15 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
-      - name: Debug input environment
+      - name: Deploy android build
+        if: ${{ github.event.inputs.deploy_android == true || github.event.inputs.deploy_android == 'true' }}
         run: |
-          echo "Selected environment: ${{ github.event.inputs.deploy_android }}"
+          echo "Deploy Build"
+
+      - name: Do not deploy android build
+        if: ${{ github.event.inputs.deploy_android == false || github.event.inputs.deploy_android == 'false' }}
+        run: |
+          echo "Skip Build"
 
 #      - name: Setup Environment
 #        uses: ./.github/actions/setup-environment
