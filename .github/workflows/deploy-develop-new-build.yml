@@ -2,6 +2,15 @@ name: Deploy Develop Build
 
 on:
   workflow_dispatch:
+    inputs:
+      deploy_android:
+        description: 'Deploy Android App'
+        required: true
+        default: 'yes'
+        type: choice
+        options:
+          - yes
+          - no
   push:
     branches: [ 'develop' ]
 
@@ -22,6 +31,7 @@ jobs:
   build-android:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    if: ${{ github.event.inputs.deploy_android == 'yes' }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
